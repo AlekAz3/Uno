@@ -202,6 +202,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Action: {fileID: 7295703331874969435}
   color: {fileID: 2069129107163082330}
+  Back: {fileID: 21300000, guid: 47f97f2bd41e5234aa9c0082d81513b2, type: 3}
+  IsWorked: 0
 --- !u!1 &5626474794783328644
 GameObject:
   m_ObjectHideFlags: 0

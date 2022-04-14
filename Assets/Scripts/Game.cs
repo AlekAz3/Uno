@@ -56,10 +56,5 @@ public class Game
     }
 
 
-    public void AddCardToHand(List<Card> cards)
-    {
-        cards.Add(Deck_cards[0]);
-        Deck_cards.RemoveAt(0);
-    }
 
 }

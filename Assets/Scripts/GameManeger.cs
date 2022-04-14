@@ -145,7 +145,7 @@ public class GameManeger : MonoBehaviour
         else
         {
             Debug.Log("Нечем ходить");
-            CurrentGame.AddCardToHand(CurrentGame.Enemy1_Cards);
+            AddCardToHand(CurrentGame.Enemy1_Cards);
             GiveCardToHand(CurrentGame.Enemy1_Cards, Enemy1Hand);
         }
         
@@ -169,7 +169,7 @@ public class GameManeger : MonoBehaviour
         else
         {
             Debug.Log("Нечем ходить 2 ");
-            CurrentGame.AddCardToHand(CurrentGame.Enemy2_Cards);
+            AddCardToHand(CurrentGame.Enemy2_Cards);
             GiveCardToHand(CurrentGame.Enemy2_Cards, Enemy2Hand);
         }
         ChangeTurn();
@@ -191,12 +191,12 @@ public class GameManeger : MonoBehaviour
         }
         else if (hand == Enemy1Hand)
         {
-            cardGO.GetComponent<CardInfo>().ShowCardInfo(card);
+            cardGO.GetComponent<CardInfo>().HideCardInfo(card);
             Enemy1_HandCards.Add(cardGO.GetComponent<CardInfo>());
         }
         else
         {
-            cardGO.GetComponent<CardInfo>().ShowCardInfo(card);
+            cardGO.GetComponent<CardInfo>().HideCardInfo(card);
             Enemy2_HandCards.Add(cardGO.GetComponent<CardInfo>());
         }
 
@@ -220,19 +220,46 @@ public class GameManeger : MonoBehaviour
          CurrentColor.color = CurrentCardInFied.color.color;
     }
 
+
+    public void UseUsedCards()
+    {
+        int tempcount = Deck_Cards.Count - 1;
+        for (int i = 0; i < tempcount; i++)
+        {
+            CurrentGame.Deck_cards.Add(Deck_Cards[i].SelfCard);
+            Deck_Cards.RemoveAt(i);
+            
+        }
+        
+        Game.Shuffle<Card>(CurrentGame.Deck_cards);
+    }
+
+    public void AddCardToHand(List<Card> cards)
+    {
+        if (CurrentGame.Deck_cards.Count == 0)
+            UseUsedCards();
+        cards.Add(CurrentGame.Deck_cards[0]);
+        CurrentGame.Deck_cards.RemoveAt(0);
+    }
+
     public void GiveNewCardtoPlayer()
     {
-        CurrentGame.Player_Cards.Add(CurrentGame.Deck_cards[0]);
-        CurrentGame.Deck_cards.RemoveAt(0);
-        GiveCardToHand(CurrentGame.Player_Cards, PlayerHand);
-        ChangeTurnButton.interactable = true;
+        if (CurrentGame.Deck_cards.Count == 0)
+            UseUsedCards();
+        else
+        {
+            CurrentGame.Player_Cards.Add(CurrentGame.Deck_cards[0]);
+            CurrentGame.Deck_cards.RemoveAt(0);
+            GiveCardToHand(CurrentGame.Player_Cards, PlayerHand);
+            ChangeTurnButton.interactable = true;
+        }
     }
 
     public void EnemyStandCard(List<CardInfo> Enemy_HandCards, CardInfo card)
     {
         Enemy_HandCards.Remove(card);
         Deck_Cards.Add(card);
-
+        card.ShowCardInfo(card.SelfCard);
         card.transform.SetParent(GameObject.Find("Field").transform);
         card.transform.position = new Vector2(960, 540); 
         //card.transform.position = new Vector2(427, 240);
@@ -307,7 +334,7 @@ public class GameManeger : MonoBehaviour
     {
         for (int i = 0; i < 4; i++)
         {
-            CurrentGame.AddCardToHand(cards);
+            AddCardToHand(cards);
             GiveCardToHand(cards, hand);
         }
     }
@@ -316,7 +343,7 @@ public class GameManeger : MonoBehaviour
     {
         for (int i = 0; i < 2; i++)
         {
-            CurrentGame.AddCardToHand(cards);
+            AddCardToHand(cards);
             GiveCardToHand(cards, hand);
         }
     }
