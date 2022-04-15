@@ -57,8 +57,16 @@ public class GameManeger : MonoBehaviour
 
     public void StartGame()
     {
+        if (CurrentGame != null)
+        {
+            CurrentGame = null;
+        }
+
+        
+
         StartScreen.gameObject.SetActive(false);
         ResultGO.SetActive(false);
+
         CurrentGame = new Game();
 
 
@@ -67,6 +75,10 @@ public class GameManeger : MonoBehaviour
         Enemy1_HandCards.Clear();
         Enemy2_HandCards.Clear();
         Deck_Cards.Clear();
+        ClearChildren(PlayerHand);
+        ClearChildren(Enemy2Hand);
+        ClearChildren(Enemy1Hand);
+
 
         GiveHandCard(CurrentGame.Enemy1_Cards, Enemy1Hand);
 
@@ -79,6 +91,28 @@ public class GameManeger : MonoBehaviour
         ColorState();
 
         StartCoroutine(TurnFunk());
+    }
+
+    public void ClearChildren(Transform hand)
+    {
+
+        int i = 0;
+
+        //Array to hold all child obj
+        GameObject[] allChildren = new GameObject[hand.transform.childCount];
+
+        //Find all child obj and store to that array
+        foreach (Transform child in hand.transform)
+        {
+            allChildren[i] = child.gameObject;
+            i += 1;
+        }
+
+        //Now destroy them
+        foreach (GameObject child in allChildren)
+        {
+            DestroyImmediate(child.gameObject);
+        }
     }
 
     void GiveHandCard(List<Card> deck, Transform hand)
@@ -382,4 +416,10 @@ public class GameManeger : MonoBehaviour
             StopAllCoroutines();
         }
     }
+
+    public void Quit()
+    {
+        Application.Quit();
+    }
+
 }
