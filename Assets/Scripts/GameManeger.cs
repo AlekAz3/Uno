@@ -76,6 +76,7 @@ public class GameManeger : MonoBehaviour
 
         EnemyStandCard(Enemy2_HandCards, Enemy2_HandCards[Enemy2_HandCards.Count - 1]);
         UseCardAbility();
+        ColorState();
 
         StartCoroutine(TurnFunk());
     }
@@ -187,6 +188,7 @@ public class GameManeger : MonoBehaviour
         if (hand == PlayerHand)
         {
             cardGO.GetComponent<CardInfo>().ShowCardInfo(card);
+            cardGO.GetComponent<CardInfo>().CanDrag = true;
             Player_HandCards.Add(cardGO.GetComponent<CardInfo>());
         }
         else if (hand == Enemy1Hand)
@@ -238,6 +240,7 @@ public class GameManeger : MonoBehaviour
     {
         if (CurrentGame.Deck_cards.Count == 0)
             UseUsedCards();
+
         cards.Add(CurrentGame.Deck_cards[0]);
         CurrentGame.Deck_cards.RemoveAt(0);
     }
@@ -246,13 +249,12 @@ public class GameManeger : MonoBehaviour
     {
         if (CurrentGame.Deck_cards.Count == 0)
             UseUsedCards();
-        else
-        {
-            CurrentGame.Player_Cards.Add(CurrentGame.Deck_cards[0]);
-            CurrentGame.Deck_cards.RemoveAt(0);
-            GiveCardToHand(CurrentGame.Player_Cards, PlayerHand);
-            ChangeTurnButton.interactable = true;
-        }
+
+        CurrentGame.Player_Cards.Add(CurrentGame.Deck_cards[0]);
+        CurrentGame.Deck_cards.RemoveAt(0);
+        GiveCardToHand(CurrentGame.Player_Cards, PlayerHand);
+        ChangeTurnButton.interactable = true;
+        
     }
 
     public void EnemyStandCard(List<CardInfo> Enemy_HandCards, CardInfo card)
@@ -260,9 +262,9 @@ public class GameManeger : MonoBehaviour
         Enemy_HandCards.Remove(card);
         Deck_Cards.Add(card);
         card.ShowCardInfo(card.SelfCard);
+        card.CanDrag = false;
         card.transform.SetParent(GameObject.Find("Field").transform);
         card.transform.position = new Vector2(960, 540); 
-        //card.transform.position = new Vector2(427, 240);
     }
 
     public void UseCardAbility()

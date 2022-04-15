@@ -28,7 +28,7 @@ public class CardMove : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (game.IsPlayerTurn)
+        if (game.IsPlayerTurn && GetComponent<CardInfo>().CanDrag)
         {
             IsOverDropZone = true;
             dropZone = collision.gameObject;
@@ -38,7 +38,7 @@ public class CardMove : MonoBehaviour
 
     private void OnCollisionExit2D(Collision2D collision)
     {
-        if (game.IsPlayerTurn)
+        if (game.IsPlayerTurn && GetComponent<CardInfo>().CanDrag)
         {
             IsOverDropZone = false;
             dropZone = null;
@@ -48,7 +48,7 @@ public class CardMove : MonoBehaviour
 
     public void BeginDrag()
     {
-        if (IsDragble && game.IsPlayerTurn)
+        if (IsDragble && game.IsPlayerTurn && GetComponent<CardInfo>().CanDrag)
         {
             startPosition = transform.position;
             IsDragging = true;
@@ -63,17 +63,15 @@ public class CardMove : MonoBehaviour
         {
             game.Player_HandCards.Remove(this.GetComponent<CardInfo>());
             game.Deck_Cards.Add(this.GetComponent<CardInfo>());
-           // game.CurrentGame.Used_Cards.Add(game.CurrentCardInFied.SelfCard);
 
 
             transform.SetParent(GameObject.Find("Field").transform);
             transform.position = new Vector2(960, 540);
-            //transform.position = new Vector2(427, 240);
             IsDragble = false;
 
             game.ChangeTurn();
         }
-        else if(game.IsPlayerTurn)
+        else if(game.IsPlayerTurn && GetComponent<CardInfo>().CanDrag)
             transform.position = startPosition;
     }
 }

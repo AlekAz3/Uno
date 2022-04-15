@@ -11,6 +11,7 @@ public class CardInfo : MonoBehaviour
     public Image color;
     public Sprite Back;
     public bool IsWorked = false;
+    public bool CanDrag = false;
 
     public void ShowCardInfo(Card card)
     {
@@ -38,7 +39,6 @@ public class CardInfo : MonoBehaviour
                 color.color = Color.green;
                 break;
         }
-
     }
 
     public void HideCardInfo(Card card)
