@@ -62,8 +62,6 @@ public class GameManeger : MonoBehaviour
             CurrentGame = null;
         }
 
-        
-
         StartScreen.gameObject.SetActive(false);
         ResultGO.SetActive(false);
 
@@ -95,20 +93,15 @@ public class GameManeger : MonoBehaviour
 
     public void ClearChildren(Transform hand)
     {
-
         int i = 0;
-
-        //Array to hold all child obj
         GameObject[] allChildren = new GameObject[hand.transform.childCount];
 
-        //Find all child obj and store to that array
         foreach (Transform child in hand.transform)
         {
             allChildren[i] = child.gameObject;
             i += 1;
         }
 
-        //Now destroy them
         foreach (GameObject child in allChildren)
         {
             DestroyImmediate(child.gameObject);
@@ -262,8 +255,8 @@ public class GameManeger : MonoBehaviour
         int tempcount = Deck_Cards.Count - 1;
         for (int i = 0; i < tempcount; i++)
         {
-            CurrentGame.Deck_cards.Add(Deck_Cards[i].SelfCard);
-            Deck_Cards.RemoveAt(i);
+            CurrentGame.Deck_cards.Add(Deck_Cards[0].SelfCard);
+            Deck_Cards.RemoveAt(0);
             
         }
         
