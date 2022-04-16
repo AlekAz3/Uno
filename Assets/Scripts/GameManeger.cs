@@ -138,7 +138,8 @@ public class GameManeger : MonoBehaviour
             else
                 StandCard(Enemy2_HandCards, Enemy2_HandCards[Enemy2_HandCards.Count - 1]);
         }
-        Turn++;
+        UseCardAbility();
+        ColorState();
     }
 
     void GiveHandCard(List<Card> deck, Transform hand)
