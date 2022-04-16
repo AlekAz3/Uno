@@ -87,7 +87,7 @@ public class GameManeger : MonoBehaviour
         GiveHandCard(CurrentGame.Player_Cards, PlayerHand);
 
         Turn = UnityEngine.Random.Range(0, 3);
-
+        //Turn = 0;
         FirstCardStand();
 
         StartCoroutine(TurnFunk());
@@ -121,7 +121,7 @@ public class GameManeger : MonoBehaviour
                 if (card.SelfCard.color != CardColor.Black)
                     CanPlaceCards.Add(card);
             }
-            StandCard(Player_HandCards, CanPlaceCards[Player_HandCards.Count - 1]);
+            StandCard(Player_HandCards, CanPlaceCards[CanPlaceCards.Count - 1]);
         }
         else if (IsEnemy1Turn)
         {
