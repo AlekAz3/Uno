@@ -46,7 +46,31 @@ public class CardInfo : MonoBehaviour
         SelfCard = card;
         Action.text = "";
         color.color = Color.magenta;
+
+
+        //SelfCard = card;
+        //Action.text = card.action.ToString();
+        //switch (card.color)
+        //{
+        //    case CardColor.Black:
+        //        color.color = Color.black;
+        //        break;
+
+        //    case CardColor.Red:
+        //        color.color = Color.red;
+        //        break;
+
+        //    case CardColor.Blue:
+        //        color.color = Color.blue;
+        //        break;
+
+        //    case CardColor.Yellow:
+        //        color.color = Color.yellow;
+        //        break;
+
+        //    case CardColor.Green:
+        //        color.color = Color.green;
+        //        break;
+        //}
     }
-
-
 }

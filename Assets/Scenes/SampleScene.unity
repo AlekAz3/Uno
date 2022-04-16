@@ -786,8 +786,10 @@ MonoBehaviour:
   TakeCard: {fileID: 1310853229}
   ChangeTurnButton: {fileID: 549404182}
   StartScreen: {fileID: 1353531476}
+  CardColorState: 0
   ResultGO: {fileID: 1054480297}
   ResultText: {fileID: 2125971405}
+  pause: 0
   Enemy1_HandCards: []
   Enemy2_HandCards: []
   Player_HandCards: []

@@ -45,12 +45,10 @@ public class Game
         }
     }
 
-    public bool CanStandCardInToField(CardInfo CardField, CardInfo CurrentCard)
+    public bool CanStandCardInToField(CardInfo CardField, CardInfo CurrentCard, CardColor color)
     {
-        if (CardField.SelfCard.color == CurrentCard.SelfCard.color || CardField.SelfCard.action == CurrentCard.SelfCard.action)
-        {
+        if (color == CurrentCard.SelfCard.color || CardField.SelfCard.action == CurrentCard.SelfCard.action || CurrentCard.SelfCard.color == CardColor.Black)
             return true;
-        }
         else
             return false;
     }
