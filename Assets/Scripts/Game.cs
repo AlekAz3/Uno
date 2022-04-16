@@ -29,7 +29,7 @@ public class Game
 
     public void DeckCardShuffle()
     {
-        Deck_cards = AllCard.AllCards;
+        Deck_cards = CardManeger.GetAllCards();
         Shuffle<Card>(Deck_cards);
     }
 

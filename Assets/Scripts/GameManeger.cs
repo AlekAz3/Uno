@@ -87,7 +87,7 @@ public class GameManeger : MonoBehaviour
         GiveHandCard(CurrentGame.Player_Cards, PlayerHand);
 
         Turn = UnityEngine.Random.Range(0, 3);
-        //Turn = 0;
+
         FirstCardStand();
 
         StartCoroutine(TurnFunk());

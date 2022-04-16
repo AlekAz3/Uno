@@ -47,26 +47,24 @@ public enum Action
 }
 
 
-public class AllCard
-{
-    public static List<Card> AllCards = new List<Card>();
-}
-
 public class CardManeger : MonoBehaviour
 {
-    public void Awake()
+    public static List<Card> GetAllCards()
     {
+        List<Card> AllCards = new List<Card>();
+
         for (int i = 0; i < 4; i++)
         {
             for (int j = 0; j < 15; j++)
                 if (j >= 13)
-                    AllCard.AllCards.Add(new Card(CardColor.Black, (Action)j));
+                    AllCards.Add(new Card(CardColor.Black, (Action)j));
                 else
-                    AllCard.AllCards.Add(new Card((CardColor)i, (Action)j));
+                    AllCards.Add(new Card((CardColor)i, (Action)j));
 
             for (int j = 1; j < 13; j++)
-                AllCard.AllCards.Add(new Card((CardColor)i, (Action)j));
+                AllCards.Add(new Card((CardColor)i, (Action)j));
         }
-
+        return AllCards;
     }
+
 }
