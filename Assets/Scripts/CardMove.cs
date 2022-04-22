@@ -20,12 +20,16 @@ public class CardMove : MonoBehaviour
     }
 
 
-
     void Update()
     {
         if (IsDragging && game.IsPlayerTurn)
         {
             transform.position = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
+            if (game.IsTwoCardPlayer && Input.GetKeyDown(KeyCode.Space))
+            {
+                game.UnoRule = true;
+                game.SendMessageToUser("UNO");
+            }
         }
     }
 

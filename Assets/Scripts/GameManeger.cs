@@ -13,6 +13,7 @@ public class GameManeger : MonoBehaviour
     public Transform Enemy1Hand, Enemy2Hand, PlayerHand;
 
     public GameObject CardPref;
+    public TextMeshProUGUI Info;
 
     public GameObject ChooseColor;
 
@@ -28,8 +29,6 @@ public class GameManeger : MonoBehaviour
 
     public GameObject ResultGO;
     public TextMeshProUGUI ResultText;
-
-    public bool pause = false;
 
     public List<CardInfo> Enemy1_HandCards = new List<CardInfo>(),
                    Enemy2_HandCards = new List<CardInfo>(),
@@ -56,6 +55,14 @@ public class GameManeger : MonoBehaviour
     {
         get { return Math.Abs(Turn % 3) == 2; }
     }
+
+    public bool IsTwoCardPlayer
+    {
+        get { return Player_HandCards.Count == 2; }
+    }
+
+    public bool UnoRule = false;
+
 
     public void StartGame()
     {
@@ -144,7 +151,7 @@ public class GameManeger : MonoBehaviour
 
     void GiveHandCard(List<Card> deck, Transform hand)
     {
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < 7; i++)
         {
             GiveCardToHand(deck, hand);
         }
@@ -152,40 +159,35 @@ public class GameManeger : MonoBehaviour
 
     public IEnumerator TurnFunk()
     {
-        TurnTime = 30;
-        TurnTimeTxt.text = TurnTime.ToString();
-
+        TurnTimeTxt.text = "";
+        
         if (IsPlayerTurn)
         {
-            while (TurnTime-- > 0)
-            {
-                TurnTimeTxt.text = TurnTime.ToString();
-                TurnTxt.text = "Ваш ход";
-                yield return new WaitForSeconds(1);
-            }
+            SendMessageToUser(" ");
+            TurnTxt.text = "Your turn";
+            yield return new WaitForSeconds(1);
         }
+
         else if (IsEnemy1Turn)
         {
-            while (TurnTime-- > 24)
-            {
-                TurnTimeTxt.text = TurnTime.ToString();
-                TurnTxt.text = "Ход противника 1";
-                yield return new WaitForSeconds(1);
-                Enemy1Turn();
-            }
+            TurnTimeTxt.text = TurnTime.ToString();
+            TurnTxt.text = "Opponent 1 turn";
+            yield return new WaitForSeconds(2);
+            Enemy1Turn();
+            yield return new WaitForSeconds(1);
+            ChangeTurn();
+
+
         }
         else if (IsEnemy2Turn)
         {
-            while (TurnTime-- > 22)
-            {
-                TurnTimeTxt.text = TurnTime.ToString();
-                TurnTxt.text = "Ход противника 2";
-                yield return new WaitForSeconds(1);
-                Enemy2Turn();
-
-            }
+            TurnTimeTxt.text = TurnTime.ToString();
+            TurnTxt.text = "Opponent 2 turn";
+            yield return new WaitForSeconds(2);
+            Enemy2Turn();
+            yield return new WaitForSeconds(1);
+            ChangeTurn();
         }
-        ChangeTurn();
     }
 
     private void Enemy1Turn()
@@ -208,11 +210,13 @@ public class GameManeger : MonoBehaviour
         }
         else
         {
+            SendMessageToUser("Enemy1 skip");
             AddCardToHand(CurrentGame.Enemy1_Cards);
             GiveCardToHand(CurrentGame.Enemy1_Cards, Enemy1Hand);
         }
-        ChangeTurn();
     }
+
+
 
     void Enemy2Turn()
     {
@@ -237,11 +241,10 @@ public class GameManeger : MonoBehaviour
         }
         else
         {
+            SendMessageToUser("Enemy2 skip");
             AddCardToHand(CurrentGame.Enemy2_Cards);
             GiveCardToHand(CurrentGame.Enemy2_Cards, Enemy2Hand);
         }
-
-        ChangeTurn();
     }
 
     void GiveCardToHand(List<Card> deck, Transform hand)
@@ -277,12 +280,30 @@ public class GameManeger : MonoBehaviour
     {
         StopAllCoroutines();
         CheckForResult();
+        CheckUnoRule();
         UseCardAbility();
         ColorState();
-
+        Debug.Log(UnoRule);
         TakeCard.interactable = IsPlayerTurn;
         ChangeTurnButton.interactable = false;
         StartCoroutine(TurnFunk());
+    }
+
+    private void CheckUnoRule()
+    {
+        if (Player_HandCards.Count == 1 && UnoRule == false)
+        {
+            SendMessageToUser("You didn't say Uno, draw 2 cards");
+            GiveNewCardtoPlayer();
+            GiveNewCardtoPlayer();
+            UnoRule = false;
+        }
+    }
+
+
+    public void SendMessageToUser(string text)
+    {
+        Info.text = text;
     }
 
     public void ColorState()
@@ -358,13 +379,8 @@ public class GameManeger : MonoBehaviour
 
     public void StandCardWithColor(List<CardInfo> HandCards, CardInfo card, CardColor color)
     {
-        HandCards.Remove(card);
-        Deck_Cards.Add(card);
-        card.ShowCardInfo(card.SelfCard);
-        card.CanDrag = false;
+        StandCard(HandCards, card);
         CardColorState = color;
-        card.transform.SetParent(GameObject.Find("Field").transform);
-        card.transform.position = new Vector2(960, 540);
     }
 
     public void UseCardAbility()
@@ -443,6 +459,7 @@ public class GameManeger : MonoBehaviour
 
     public void AddFour(List<Card> cards, Transform hand)
     {
+        SendMessageToUser("Add Four");
         for (int i = 0; i < 4; i++)
         {
             AddCardToHand(cards);
@@ -452,6 +469,7 @@ public class GameManeger : MonoBehaviour
 
     public void AddTwo(List<Card> cards, Transform hand)
     {
+        SendMessageToUser("Add Two");
         for (int i = 0; i < 2; i++)
         {
             AddCardToHand(cards);
@@ -461,13 +479,15 @@ public class GameManeger : MonoBehaviour
 
     public void Block()
     {
+        SendMessageToUser("Block");
         Turn = Turn + CurrentGame.PlusTurn;
         Turn = Turn + CurrentGame.PlusTurn;
     }
 
     public void Reverse()
     {
-        CurrentGame.PlusTurn = -1;
+        SendMessageToUser("Reverse");
+        CurrentGame.PlusTurn = -CurrentGame.PlusTurn;
     }
 
     public void CheckForResult()
@@ -475,19 +495,19 @@ public class GameManeger : MonoBehaviour
         if (Player_HandCards.Count == 0)
         {
             ResultGO.SetActive(true);
-            ResultText.text = "Вы победили";
+            ResultText.text = "Win";
             StopAllCoroutines();
         }
         else if (Enemy1_HandCards.Count == 0)
         {
             ResultGO.SetActive(true);
-            ResultText.text = "Противник 1 победил";
+            ResultText.text = "Lose";
             StopAllCoroutines();
         }
         else if (Enemy2_HandCards.Count == 0)
         {
             ResultGO.SetActive(true);
-            ResultText.text = "Противник 2 победил";
+            ResultText.text = "Lose";
             StopAllCoroutines();
         }
     }
