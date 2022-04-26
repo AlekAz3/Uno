@@ -17,9 +17,8 @@ public class GameManeger : MonoBehaviour
 
     public GameObject ChooseColor;
 
-    int Turn = 2, TurnTime = 30;
+    int Turn;
 
-    public TextMeshProUGUI TurnTimeTxt;
     public TextMeshProUGUI TurnTxt;
     public Button TakeCard;
     public Button ChangeTurnButton;
@@ -67,25 +66,22 @@ public class GameManeger : MonoBehaviour
     public void StartGame()
     {
         if (CurrentGame != null)
-        {
             CurrentGame = null;
-        }
-
+        
         StartScreen.gameObject.SetActive(false);
         ResultGO.SetActive(false);
 
         CurrentGame = new Game();
 
-
-
         Player_HandCards.Clear();
         Enemy1_HandCards.Clear();
         Enemy2_HandCards.Clear();
+
         Deck_Cards.Clear();
+
         ClearChildren(PlayerHand);
         ClearChildren(Enemy2Hand);
         ClearChildren(Enemy1Hand);
-
 
         GiveHandCard(CurrentGame.Enemy1_Cards, Enemy1Hand);
 
@@ -112,9 +108,7 @@ public class GameManeger : MonoBehaviour
         }
 
         foreach (GameObject child in allChildren)
-        {
             DestroyImmediate(child.gameObject);
-        }
     }
 
     private void FirstCardStand()
@@ -124,27 +118,20 @@ public class GameManeger : MonoBehaviour
         if (IsPlayerTurn)
         {
             foreach (CardInfo card in Player_HandCards)
-            {
                 if (card.SelfCard.color != CardColor.Black)
                     CanPlaceCards.Add(card);
-            }
             StandCard(Player_HandCards, CanPlaceCards[CanPlaceCards.Count - 1]);
         }
         else if (IsEnemy1Turn)
-        {
             if (Enemy1_HandCards[Enemy1_HandCards.Count - 1].SelfCard.color == CardColor.Black)
                 StandCardWithColor(Enemy1_HandCards, Enemy1_HandCards[Enemy1_HandCards.Count - 1], (CardColor)UnityEngine.Random.Range(0, 4));
             else
                 StandCard(Enemy1_HandCards, Enemy1_HandCards[Enemy1_HandCards.Count - 1]);
-
-        }
         else if (IsEnemy2Turn)
-        {
             if (Enemy2_HandCards[Enemy2_HandCards.Count - 1].SelfCard.color == CardColor.Black)
                 StandCardWithColor(Enemy2_HandCards, Enemy2_HandCards[Enemy2_HandCards.Count - 1], (CardColor)UnityEngine.Random.Range(0, 4));
             else
                 StandCard(Enemy2_HandCards, Enemy2_HandCards[Enemy2_HandCards.Count - 1]);
-        }
         UseCardAbility();
         ColorState();
     }
@@ -153,34 +140,28 @@ public class GameManeger : MonoBehaviour
     {
         for (int i = 0; i < 7; i++)
             GiveCardToHand(deck, hand);
-
     }
 
     public IEnumerator TurnFunk()
     {
-        TurnTimeTxt.text = "";
-
         if (IsPlayerTurn)
         {
             SendMessageToUser(" ");
             TurnTxt.text = "Your turn";
             yield return new WaitForSeconds(1);
         }
-
         else if (IsEnemy1Turn)
         {
-            TurnTimeTxt.text = TurnTime.ToString();
             TurnTxt.text = "Opponent 1 turn";
-            yield return new WaitForSeconds(2);
+            yield return new WaitForSeconds(1);
             EnemyTurn(Enemy1_HandCards);
             yield return new WaitForSeconds(1);
             ChangeTurn();
         }
         else if (IsEnemy2Turn)
         {
-            TurnTimeTxt.text = TurnTime.ToString();
             TurnTxt.text = "Opponent 2 turn";
-            yield return new WaitForSeconds(2);
+            yield return new WaitForSeconds(1);
             EnemyTurn(Enemy2_HandCards);
             yield return new WaitForSeconds(1);
             ChangeTurn();
@@ -203,22 +184,18 @@ public class GameManeger : MonoBehaviour
             else
                 StandCard(HandCards, CanPlaceCards[id]);
         else
-        {
             if (IsEnemy1Turn)
             {
                 SendMessageToUser("Enemy1 skip");
                 AddCardToHand(CurrentGame.Enemy1_Cards);
                 GiveCardToHand(CurrentGame.Enemy1_Cards, Enemy1Hand);
             }
-            else
+            else if(IsEnemy2Turn)
             {
                 SendMessageToUser("Enemy2 skip");
                 AddCardToHand(CurrentGame.Enemy2_Cards);
                 GiveCardToHand(CurrentGame.Enemy2_Cards, Enemy2Hand);
             }
-
-
-        }
     }
 
     void GiveCardToHand(List<Card> deck, Transform hand)
@@ -257,7 +234,6 @@ public class GameManeger : MonoBehaviour
         CheckUnoRule();
         UseCardAbility();
         ColorState();
-        Debug.Log(UnoRule);
         TakeCard.interactable = IsPlayerTurn;
         ChangeTurnButton.interactable = false;
         StartCoroutine(TurnFunk());
@@ -294,11 +270,7 @@ public class GameManeger : MonoBehaviour
         UnoRule = false;
     }
 
-
-    public void SendMessageToUser(string text)
-    {
-        Info.text = text;
-    }
+    public void SendMessageToUser(string text) => Info.text = text;
 
     public void ColorState()
     {
@@ -333,9 +305,7 @@ public class GameManeger : MonoBehaviour
         {
             CurrentGame.Deck_cards.Add(Deck_Cards[0].SelfCard);
             Deck_Cards.RemoveAt(0);
-
         }
-
         Game.Shuffle<Card>(CurrentGame.Deck_cards);
     }
 
@@ -343,7 +313,6 @@ public class GameManeger : MonoBehaviour
     {
         if (CurrentGame.Deck_cards.Count == 0)
             UseUsedCards();
-
         cards.Add(CurrentGame.Deck_cards[0]);
         CurrentGame.Deck_cards.RemoveAt(0);
     }
@@ -507,9 +476,5 @@ public class GameManeger : MonoBehaviour
         }
     }
 
-    public void Quit()
-    {
-        Application.Quit();
-    }
-
+    public void Quit() => Application.Quit();
 }

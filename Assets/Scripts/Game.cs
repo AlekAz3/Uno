@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class Game
 {
@@ -38,7 +37,6 @@ public class Game
         for (int i = list.Count - 1; i >= 1; i--)
         {
             int j = Random.Range(0, i + 1);
-
             T tmp = list[j];
             list[j] = list[i];
             list[i] = tmp;
@@ -52,5 +50,4 @@ public class Game
         else
             return false;
     }
-
 }

@@ -4,11 +4,8 @@ public class ChooseColor : MonoBehaviour
 {
     private GameManeger game;
 
-    private void Awake()
-    {
-        game = FindObjectOfType<GameManeger>();
-    }
-
+    private void Awake() => game = FindObjectOfType<GameManeger>();
+    
     public void ChooseRed()
     {
         game.CardColorState = CardColor.Red;
@@ -36,5 +33,4 @@ public class ChooseColor : MonoBehaviour
         Destroy(gameObject);
         game.ChangeTurn();
     }
-
 }

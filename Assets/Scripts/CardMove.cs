@@ -40,7 +40,6 @@ public class CardMove : MonoBehaviour
             IsOverDropZone = true;
             dropZone = collision.gameObject;
         }
-        
     }
 
     private void OnCollisionExit2D(Collision2D collision)
@@ -50,7 +49,6 @@ public class CardMove : MonoBehaviour
             IsOverDropZone = false;
             dropZone = null;
         }
-        
     }
 
     public void BeginDrag()
@@ -93,6 +91,5 @@ public class CardMove : MonoBehaviour
     {
         ChooseColor = Instantiate(ChooseColorPref, GameObject.Find("Background").transform, false);
         ChooseColor.SetActive(true);
-
     }
 }

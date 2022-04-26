@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,13 +6,11 @@ public struct Card
 {
     public CardColor color;
     public Action action;
-    public int points;
 
     public Card(CardColor color, Action action)
     {
         this.color = color;
         this.action = action;
-        this.points = (int)action;
     }
 }
 
@@ -46,7 +43,6 @@ public enum Action
     ChangeColor
 }
 
-
 public class CardManeger : MonoBehaviour
 {
     public static List<Card> GetAllCards()
@@ -66,5 +62,4 @@ public class CardManeger : MonoBehaviour
         }
         return AllCards;
     }
-
 }
