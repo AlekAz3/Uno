@@ -152,15 +152,14 @@ public class GameManeger : MonoBehaviour
     void GiveHandCard(List<Card> deck, Transform hand)
     {
         for (int i = 0; i < 7; i++)
-        {
             GiveCardToHand(deck, hand);
-        }
+
     }
 
     public IEnumerator TurnFunk()
     {
         TurnTimeTxt.text = "";
-        
+
         if (IsPlayerTurn)
         {
             SendMessageToUser(" ");
@@ -173,77 +172,52 @@ public class GameManeger : MonoBehaviour
             TurnTimeTxt.text = TurnTime.ToString();
             TurnTxt.text = "Opponent 1 turn";
             yield return new WaitForSeconds(2);
-            Enemy1Turn();
+            EnemyTurn(Enemy1_HandCards);
             yield return new WaitForSeconds(1);
             ChangeTurn();
-
-
         }
         else if (IsEnemy2Turn)
         {
             TurnTimeTxt.text = TurnTime.ToString();
             TurnTxt.text = "Opponent 2 turn";
             yield return new WaitForSeconds(2);
-            Enemy2Turn();
+            EnemyTurn(Enemy2_HandCards);
             yield return new WaitForSeconds(1);
             ChangeTurn();
         }
     }
 
-    private void Enemy1Turn()
+    private void EnemyTurn(List<CardInfo> HandCards)
     {
         List<CardInfo> CanPlaceCards = new List<CardInfo>();
 
-        foreach (CardInfo card in Enemy1_HandCards)
-        {
+        foreach (CardInfo card in HandCards)
             if (CurrentGame.CanStandCardInToField(CurrentCardInFied, card, CardColorState))
                 CanPlaceCards.Add(card);
-        }
+
         int id = UnityEngine.Random.Range(0, CanPlaceCards.Count);
 
         if (CanPlaceCards.Count != 0)
-        {
             if (CanPlaceCards[id].SelfCard.color == CardColor.Black)
-                StandCardWithColor(Enemy1_HandCards, CanPlaceCards[id], (CardColor)UnityEngine.Random.Range(0, 4));
+                StandCardWithColor(HandCards, CanPlaceCards[id], (CardColor)UnityEngine.Random.Range(0, 4));
             else
-                StandCard(Enemy1_HandCards, CanPlaceCards[id]);
-        }
+                StandCard(HandCards, CanPlaceCards[id]);
         else
         {
-            SendMessageToUser("Enemy1 skip");
-            AddCardToHand(CurrentGame.Enemy1_Cards);
-            GiveCardToHand(CurrentGame.Enemy1_Cards, Enemy1Hand);
-        }
-    }
-
-
-
-    void Enemy2Turn()
-    {
-
-        List<CardInfo> CanPlaceCards = new List<CardInfo>();
-
-        foreach (CardInfo card in Enemy2_HandCards)
-        {
-            if (CurrentGame.CanStandCardInToField(CurrentCardInFied, card, CardColorState))
-                CanPlaceCards.Add(card);
-        }
-
-        int id = UnityEngine.Random.Range(0, CanPlaceCards.Count);
-
-
-        if (CanPlaceCards.Count != 0)
-        {
-            if (CanPlaceCards[id].SelfCard.color == CardColor.Black)
-                StandCardWithColor(Enemy2_HandCards, CanPlaceCards[id], (CardColor)UnityEngine.Random.Range(0, 4));
+            if (IsEnemy1Turn)
+            {
+                SendMessageToUser("Enemy1 skip");
+                AddCardToHand(CurrentGame.Enemy1_Cards);
+                GiveCardToHand(CurrentGame.Enemy1_Cards, Enemy1Hand);
+            }
             else
-                StandCard(Enemy2_HandCards, CanPlaceCards[id]);
-        }
-        else
-        {
-            SendMessageToUser("Enemy2 skip");
-            AddCardToHand(CurrentGame.Enemy2_Cards);
-            GiveCardToHand(CurrentGame.Enemy2_Cards, Enemy2Hand);
+            {
+                SendMessageToUser("Enemy2 skip");
+                AddCardToHand(CurrentGame.Enemy2_Cards);
+                GiveCardToHand(CurrentGame.Enemy2_Cards, Enemy2Hand);
+            }
+
+
         }
     }
 
@@ -291,13 +265,33 @@ public class GameManeger : MonoBehaviour
 
     private void CheckUnoRule()
     {
-        if (Player_HandCards.Count == 1 && UnoRule == false)
+        if (Player_HandCards.Count == 1 && UnoRule == false && UnityEngine.Random.Range(0, 3) == 1 && IsPlayerTurn)
         {
             SendMessageToUser("You didn't say Uno, draw 2 cards");
             GiveNewCardtoPlayer();
             GiveNewCardtoPlayer();
-            UnoRule = false;
         }
+        if (Enemy1_HandCards.Count == 1 && UnityEngine.Random.Range(0, 3) == 1 && IsEnemy1Turn)
+        {
+            SendMessageToUser("Enemy 1 didn't say Uno, draw 2 cards");
+
+            AddCardToHand(CurrentGame.Enemy1_Cards);
+            GiveCardToHand(CurrentGame.Enemy1_Cards, Enemy1Hand);
+
+            AddCardToHand(CurrentGame.Enemy1_Cards);
+            GiveCardToHand(CurrentGame.Enemy1_Cards, Enemy1Hand);
+        }
+        if (Enemy2_HandCards.Count == 1 && UnityEngine.Random.Range(0, 3) == 2 && IsEnemy2Turn)
+        {
+            SendMessageToUser("Enemy 2 didn't say Uno, draw 2 cards");
+
+            AddCardToHand(CurrentGame.Enemy2_Cards);
+            GiveCardToHand(CurrentGame.Enemy2_Cards, Enemy2Hand);
+
+            AddCardToHand(CurrentGame.Enemy2_Cards);
+            GiveCardToHand(CurrentGame.Enemy2_Cards, Enemy2Hand);
+        }
+        UnoRule = false;
     }
 
 
@@ -363,6 +357,7 @@ public class GameManeger : MonoBehaviour
         CurrentGame.Deck_cards.RemoveAt(0);
         GiveCardToHand(CurrentGame.Player_Cards, PlayerHand);
         ChangeTurnButton.interactable = true;
+        TakeCard.interactable = false;
 
     }
 
@@ -487,7 +482,7 @@ public class GameManeger : MonoBehaviour
     public void Reverse()
     {
         SendMessageToUser("Reverse");
-        CurrentGame.PlusTurn = -CurrentGame.PlusTurn;
+        CurrentGame.PlusTurn *= -1;
     }
 
     public void CheckForResult()
